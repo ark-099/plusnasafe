@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         * {
             margin: 0;
@@ -1649,39 +1650,39 @@
                 <p class="section-subtitle" style="text-align: center; margin-left: auto; margin-right: auto;">Provide essentials so the intake call is decisive.</p>
 
                 <div class="form-container">
-                    <form id="bookingForm" onsubmit="handleBooking(event)">
+                    <form id="bookingForm" action="https://formspree.io/f/FORMSPREE_ID_HERE" method="POST" onsubmit="handleBooking(event)">
                         <h3 style="color: var(--orange); margin-bottom: 2rem;">Property & Contact Details</h3>
 
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Property / Brand Name *</label>
-                                <input type="text" id="propertyName" required placeholder="Enter property name">
+                                <input type="text" id="propertyName" name="propertyName" required placeholder="Enter property name">
                             </div>
                             <div class="form-group">
                                 <label>Your Role *</label>
-                                <input type="text" id="role" required placeholder="e.g., General Manager">
+                                <input type="text" id="role" name="role" required placeholder="e.g., General Manager">
                             </div>
                         </div>
 
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Full Name *</label>
-                                <input type="text" id="fullName" required placeholder="Enter your name">
+                                <input type="text" id="fullName" name="fullName" required placeholder="Enter your name">
                             </div>
                             <div class="form-group">
                                 <label>Working Email *</label>
-                                <input type="email" id="email" required placeholder="your.email@company.com">
+                                <input type="email" id="email" name="email" required placeholder="your.email@company.com">
                             </div>
                         </div>
 
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Phone *</label>
-                                <input type="tel" id="phone" required placeholder="Enter phone number">
+                                <input type="tel" id="phone" name="phone" required placeholder="Enter phone number">
                             </div>
                             <div class="form-group">
                                 <label>Primary Concern *</label>
-                                <select id="concern" required>
+                                <select id="concern" name="concern" required>
                                     <option value="">Select primary concern</option>
                                     <option value="inspection">Inspection readiness</option>
                                     <option value="operational">Operational drift</option>
@@ -1699,11 +1700,11 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>Purchase Order Number *</label>
-                                <input type="text" id="poNumber" required placeholder="Enter PO number">
+                                <input type="text" id="poNumber" name="poNumber" required placeholder="Enter PO number">
                             </div>
                             <div class="form-group">
                                 <label>Finance Contact Email *</label>
-                                <input type="email" id="financeEmail" required placeholder="finance@company.com">
+                                <input type="email" id="financeEmail" name="financeEmail" required placeholder="finance@company.com">
                             </div>
                         </div>
 
@@ -1803,10 +1804,11 @@
                     <a href="#pricing">Investment</a>
                 </div>
                 <div>
-                    <h3>Engagement</h3>
+                    <h3>Engagement & Contact</h3>
                     <a href="#booking">Request A Slot</a>
                     <a href="#process">Learn More</a>
-                    <a href="mailto:hello@plusnasafe.com">Contact Us</a>
+                    <a href="mailto:consulting@plusnasafe.co.ke">Email: consulting@plusnasafe.co.ke</a>
+                    <a href="tel:+254140571423">Phone: +254 140 571 423</a>
                 </div>
                 <div>
                     <h3>Legal</h3>
@@ -1838,17 +1840,39 @@
             });
         });
 
-        // Handle Booking Form
+        // Handle Booking Form with Formspree
         function handleBooking(event) {
             event.preventDefault();
             
             const email = document.getElementById('email').value;
             document.getElementById('confirmEmail').textContent = email;
             
-            document.getElementById('home-page').style.display = 'none';
-            document.getElementById('confirmation-page').classList.add('active');
+            // Submit the form to Formspree
+            const form = document.getElementById('bookingForm');
             
-            window.scrollTo(0, 0);
+            // Create FormData from the form
+            const formData = new FormData(form);
+            
+            // Send to Formspree
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                // Show confirmation page regardless of response
+                document.getElementById('home-page').style.display = 'none';
+                document.getElementById('confirmation-page').classList.add('active');
+                window.scrollTo(0, 0);
+                form.reset();
+            }).catch(error => {
+                console.error('Error:', error);
+                // Still show confirmation even if submission fails
+                document.getElementById('home-page').style.display = 'none';
+                document.getElementById('confirmation-page').classList.add('active');
+                window.scrollTo(0, 0);
+            });
         }
 
         // Reset Form
